@@ -1,0 +1,533 @@
+openapi: 3.0.0
+info:
+  title: Universe
+  description: |
+    This is the API documentation for the Universe API
+  contact:
+    email: rameshan@usc.edu
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://virtserver.swaggerhub.com/ANIRUDHRAMESH0_1/Universe/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: user
+  description: APIs relating to user
+- name: marketplace
+  description: APIs relating to Marketplace
+paths:
+  /user/signup:
+    post:
+      tags:
+      - user
+      summary: Sign up a new user to the website
+      operationId: signup
+      requestBody:
+        description: Create user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+        required: true
+      responses:
+        "201":
+          description: User added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignupResponse'
+        "409":
+          description: Account with Email or Phone number already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /user/login:
+    post:
+      tags:
+      - user
+      summary: Authenticate a user into the website
+      operationId: login
+      requestBody:
+        description: Login user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "200":
+          description: Login Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /marketplace:
+    get:
+      tags:
+      - marketplace
+      summary: Get products
+      operationId: getProducts
+      parameters:
+      - name: productName
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: productId
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: verified
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: priceFrom
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: priceTo
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: distanceFromHome
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: height
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          description: 0 for adjustable height
+      - name: width
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: depth
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: age
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: location
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketplaceProductResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    post:
+      tags:
+      - marketplace
+      summary: Add a new product to sell
+      operationId: addProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddProductRequest'
+      responses:
+        "201":
+          description: New product added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddProductResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /marketplace/contactOwner:
+    post:
+      tags:
+      - marketplace
+      summary: Contact owner and send quote
+      operationId: contactOwner
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactOwnerRequest'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        userStatus:
+          type: integer
+          description: User Status
+          format: int32
+      xml:
+        name: User
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          default: 400
+        type:
+          type: string
+        message:
+          type: string
+    SignupResponse:
+      title: SignupResponse
+      type: object
+      properties:
+        id:
+          type: string
+        ApiResponse:
+          $ref: '#/components/schemas/ApiResponse'
+    SignupRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+          x-stoplight:
+            id: ezlums5y930eq
+        email:
+          pattern: "^[a-z0-9.]+@usc.edu$"
+          type: string
+          format: email
+          example: rameshan@usc.edu
+          x-stoplight:
+            id: 1622mjq6pfllp
+        phoneNumber:
+          maxLength: 13
+          minLength: 13
+          pattern: "^\\([1-9][0-9]{2}\\) [0-9]{3}-[0-9]{4}$"
+          type: string
+          example: (323) 620-6905
+          x-stoplight:
+            id: 6264i930xq0gz
+        firstName:
+          type: string
+          x-stoplight:
+            id: jn0a775d3n8q3
+        lastName:
+          type: string
+          x-stoplight:
+            id: 13monjgxubbpc
+        middleName:
+          type: string
+          x-stoplight:
+            id: j6x2z9tsuwjcq
+        address:
+          type: string
+          x-stoplight:
+            id: nmpj2k3kftp3t
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+          x-stoplight:
+            id: 6g3ggls2q3cfr
+    LoginResponse:
+      title: LoginResponse
+      type: object
+      properties:
+        token:
+          type: string
+        apiResponse:
+          $ref: '#/components/schemas/ApiResponse'
+    MarketplaceProductResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketplaceProductResponse_products'
+        apiResponse:
+          $ref: '#/components/schemas/ApiResponse'
+    AddProductRequest:
+      title: AddProductRequest
+      type: object
+      properties:
+        productName:
+          type: string
+        sellingPrice:
+          type: number
+          format: double
+          x-stoplight:
+            id: v6ny2hlrrbakn
+        originalCost:
+          type: number
+          x-stoplight:
+            id: 4x8gs3oc4ojdc
+        isPriceNegotiable:
+          type: string
+          x-stoplight:
+            id: kb9uud2h3plap
+        productType:
+          type: string
+          enum:
+          - Furniture
+          - Electronic
+          - Utensils
+          - Fashion
+          - Food/Edible
+          x-stoplight:
+            id: nxh2cg6zppihb
+        yearsUsed:
+          type: integer
+          format: int32
+          x-stoplight:
+            id: jdso8yvgkly07
+        damage:
+          type: string
+          enum:
+          - Mild
+          - Moderate
+          - Severe
+          - None
+          x-stoplight:
+            id: vtbdgwa64o9as
+        description:
+          type: string
+          x-stoplight:
+            id: evyoc76w77d1c
+        productImages:
+          type: array
+          items:
+            type: string
+            format: uri
+            x-stoplight:
+              id: 1vhtsvrssu9fy
+          x-stoplight:
+            id: f5trxx6lrns5u
+        productOrigin:
+          type: string
+          enum:
+          - Amazon
+          - Walmart
+          - Costco
+          - Other
+          - Unknown
+          x-stoplight:
+            id: ercrwdj6sooz0
+        ownerId:
+          type: string
+          x-stoplight:
+            id: rwti4kx7q7cdd
+    AddProductResponse:
+      title: AddProductResponse
+      type: object
+      properties:
+        id:
+          type: string
+        apiResponse:
+          $ref: '#/components/schemas/ApiResponse'
+    ContactOwnerRequest:
+      title: ContactOwnerRequest
+      type: object
+      properties:
+        ownerId:
+          type: string
+        minPrice:
+          type: number
+          format: double
+          x-stoplight:
+            id: 5uzypmc83ls75
+        maxPrice:
+          type: number
+          format: double
+          x-stoplight:
+            id: 2p18l8gmo2vew
+        personalizedMessage:
+          type: string
+          x-stoplight:
+            id: 2qzet7cgin1yb
+    MarketplaceProductResponse_products:
+      type: object
+      properties:
+        productName:
+          type: string
+          x-stoplight:
+            id: it44y3squsdns
+        price:
+          type: number
+          format: double
+          x-stoplight:
+            id: tkei0lb95dopk
+        postedDate:
+          type: string
+          x-stoplight:
+            id: 7rl8n91z4wqr1
+        location:
+          type: string
+          x-stoplight:
+            id: 37wmwf8clcfp1
+        distance:
+          type: string
+          x-stoplight:
+            id: hlt2xozb875yz
+  responses:
+    MarketplaceProductResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              products:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    productName:
+                      type: string
+                      x-stoplight:
+                        id: vz82cgblj2pgr
+                    price:
+                      type: number
+                      format: double
+                      x-stoplight:
+                        id: ig0wf3p1o2ol1
+                    postedDate:
+                      type: string
+                      format: date
+                      x-stoplight:
+                        id: vnbweaqlji5ht
+                    location:
+                      type: string
+                      x-stoplight:
+                        id: ax6vzn21wst86
+                    distance:
+                      type: number
+                      format: double
+                      x-stoplight:
+                        id: o1ozdktq5oaw5
+                  x-stoplight:
+                    id: 9crzco63mhajx
+  requestBodies:
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      required: true
+  securitySchemes:
+    universe_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://petstore.swagger.io/oauth/dialog
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
