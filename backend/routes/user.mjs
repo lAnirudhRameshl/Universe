@@ -6,6 +6,8 @@ import {
 	generateConflictResponse,
 	generateSignupSuccessResponse,
 	generateInternalServerErrorResponse,
+	generateLoginSuccessResponse,
+	generateLoginFailureResponse,
 } from "../util/responseUtil.mjs";
 import { USER_CONFLICT } from "../constants.mjs";
 
@@ -32,6 +34,26 @@ router.post("/signup", async (req, res) => {
 			res.status(201).send(
 				generateSignupSuccessResponse(result.insertedId)
 			);
+		}
+	} catch (e) {
+		res.status(500).send(generateInternalServerErrorResponse());
+	}
+});
+
+router.post("/login", async (req, res) => {
+	const { email, password } = req.body;
+
+	try {
+		let userCollection = db.collection(COLLECTION_NAME);
+		let dbUser = await userCollection.findOne({
+			email: email,
+			password: password,
+		});
+
+		if (dbUser) {
+			res.status(200).send(generateLoginSuccessResponse());
+		} else {
+			res.status(401).send(generateLoginFailureResponse());
 		}
 	} catch (e) {
 		res.status(500).send(generateInternalServerErrorResponse());

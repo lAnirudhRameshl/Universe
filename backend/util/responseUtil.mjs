@@ -1,26 +1,41 @@
 export function generateConflictResponse(message) {
-	return {
-		code: 409,
-		type: "Conflict",
-		message: message,
-	};
+	return generateApiResponse(409, "Conflict", message);
 }
 
 export function generateSignupSuccessResponse(id) {
 	return {
 		id: id,
-		apiMessage: {
-			code: 201,
-			type: "Created",
-			message: "User signed up successfully",
-		},
+		apiMessage: generateApiResponse(
+			201,
+			"Created",
+			"User signed up successfully"
+		),
 	};
 }
 
 export function generateInternalServerErrorResponse(id) {
+	return generateApiResponse(
+		500,
+		"Internal Server Error",
+		"There was an internal server error. Please try again later"
+	);
+}
+
+export function generateLoginSuccessResponse(token) {
 	return {
-		code: 500,
-		type: "Internal Server Error",
-		message: "There was an internal server error. Please try again later",
+		token: token,
+		apiResponse: generateApiResponse(200, "Success", "Login successful"),
 	};
+}
+
+export function generateLoginFailureResponse() {
+	return generateApiResponse(
+		401,
+		"Unauthorized",
+		"Entered incorrect username or password"
+	);
+}
+
+function generateApiResponse(code, type, message) {
+	return { code, type, message };
 }
